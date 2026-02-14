@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Jobs\SendSmsJob;
+use App\Models\Contact;
 use App\Models\ContactGroup;
 use App\Models\SmsMessage;
 use App\Models\SmsProvider;
@@ -86,6 +87,7 @@ class SmsController extends Controller
         $provider = SmsProvider::findOrFail($validated['provider_id']);
 
         $recipients = [];
+    
 
         // Get recipients from groups
         if (!empty($validated['group_ids'])) {
@@ -99,12 +101,13 @@ class SmsController extends Controller
                         $recipients[] = [
                             'phone' => $contact->phone_number,
                             'name' => $contact->name,
+                            'contact_id' => $contact->id,
                         ];
                     }
                 }
             }
         }
-
+        
         // Add manual phone numbers
         if (!empty($validated['phone_numbers'])) {
             $manualNumbers = array_filter(
@@ -135,6 +138,7 @@ class SmsController extends Controller
         $failCount = 0;
 
         DB::beginTransaction();
+
         try {
             foreach ($recipients as $recipient) {
                 $message = SmsMessage::create([
@@ -157,6 +161,7 @@ class SmsController extends Controller
             return redirect()->route('sms.index')
                 ->with('success', "Bulk SMS queued: " . count($recipients) . " messages");
         } catch (\Exception $e) {
+            Log::error('Failed to queue bulk SMS: ' . $e->getMessage());
             DB::rollBack();
             return back()->withErrors(['error' => 'Failed to queue bulk SMS: ' . $e->getMessage()]);
         }

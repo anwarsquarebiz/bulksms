@@ -16,6 +16,7 @@ class SmsMessage extends Model
         'campaign_id',
         'contact_id',
         'provider_id',
+        'direction',
         'to',
         'from',
         'message',
@@ -27,6 +28,7 @@ class SmsMessage extends Model
         'metadata',
         'sent_at',
         'delivered_at',
+        'received_at',
     ];
 
     protected $casts = [
@@ -35,6 +37,7 @@ class SmsMessage extends Model
         'metadata' => 'array',
         'sent_at' => 'datetime',
         'delivered_at' => 'datetime',
+        'received_at' => 'datetime',
     ];
 
     public function user(): BelongsTo

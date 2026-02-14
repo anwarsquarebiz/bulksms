@@ -32,13 +32,19 @@ class TwilioService implements SmsServiceInterface
         }
 
         try {
-            $response = Http::withBasicAuth($accountSid, $authToken)
-                ->asForm()
-                ->post("https://api.twilio.com/2010-04-01/Accounts/{$accountSid}/Messages.json", [
-                    'From' => $fromNumber,
-                    'To' => $to,
-                    'Body' => $message,
-                ]);
+            $http = Http::withBasicAuth($accountSid, $authToken)
+                ->asForm();
+
+            // Disable SSL verification in local development (Windows cURL issue)
+            if (app()->environment('local')) {
+                $http = $http->withoutVerifying();
+            }
+
+            $response = $http->post("https://api.twilio.com/2010-04-01/Accounts/{$accountSid}/Messages.json", [
+                'From' => $fromNumber,
+                'To' => $to,
+                'Body' => $message,
+            ]);
 
             if ($response->successful()) {
                 $data = $response->json();

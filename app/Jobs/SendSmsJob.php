@@ -94,6 +94,8 @@ class SendSmsJob implements ShouldQueue
                 throw $e; // Retry
             }
         }
+
+        sleep(10);
     }
 }
 

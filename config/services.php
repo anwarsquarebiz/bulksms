@@ -35,4 +35,8 @@ return [
         ],
     ],
 
+    'telnyx' => [
+        'public_key' => env('TELNYX_PUBLIC_KEY'),
+    ],
+
 ];

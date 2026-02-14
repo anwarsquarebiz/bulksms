@@ -1,5 +1,5 @@
 import { Link } from '@inertiajs/react';
-import { BookOpen, Folder, LayoutGrid, MessageSquare, Users, FileText, BarChart3, Megaphone, Settings } from 'lucide-react';
+import { BookOpen, Folder, Inbox, LayoutGrid, MessageSquare, Users, FileText, BarChart3, Megaphone, Settings } from 'lucide-react';
 import { NavFooter } from '@/components/nav-footer';
 import { NavMain } from '@/components/nav-main';
 import { NavUser } from '@/components/nav-user';
@@ -15,6 +15,7 @@ import {
 import { dashboard } from '@/routes';
 import contacts from '@/routes/contacts';
 import contactGroups from '@/routes/contact-groups';
+import inbox from '@/routes/inbox';
 import sms from '@/routes/sms';
 import campaigns from '@/routes/campaigns';
 import smsTemplates from '@/routes/sms-templates';
@@ -43,6 +44,11 @@ const mainNavItems: NavItem[] = [
         title: 'SMS',
         href: sms.index(),
         icon: MessageSquare,
+    },
+    {
+        title: 'Inbox',
+        href: inbox.index(),
+        icon: Inbox,
     },
     {
         title: 'Campaigns',

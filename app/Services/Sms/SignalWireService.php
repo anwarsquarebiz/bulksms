@@ -33,13 +33,19 @@ class SignalWireService implements SmsServiceInterface
         }
 
         try {
-            $response = Http::withBasicAuth($projectId, $authToken)
-                ->asForm()
-                ->post("https://{$spaceUrl}/api/laml/2010-04-01/Accounts/{$projectId}/Messages.json", [
-                    'From' => $fromNumber,
-                    'To' => $to,
-                    'Body' => $message,
-                ]);
+            $http = Http::withBasicAuth($projectId, $authToken)
+                ->asForm();
+
+            // Disable SSL verification in local development (Windows cURL issue)
+            if (app()->environment('local')) {
+                $http = $http->withoutVerifying();
+            }
+
+            $response = $http->post("https://{$spaceUrl}/api/laml/2010-04-01/Accounts/{$projectId}/Messages.json", [
+                'From' => $fromNumber,
+                'To' => $to,
+                'Body' => $message,
+            ]);
 
             if ($response->successful()) {
                 $data = $response->json();

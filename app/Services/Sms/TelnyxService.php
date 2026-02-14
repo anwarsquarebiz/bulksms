@@ -31,10 +31,17 @@ class TelnyxService implements SmsServiceInterface
         }
 
         try {
-            $response = Http::withHeaders([
+            $http = Http::withHeaders([
                 'Authorization' => "Bearer {$apiKey}",
                 'Content-Type' => 'application/json',
-            ])->post('https://api.telnyx.com/v2/messages', [
+            ]);
+
+            // Disable SSL verification in local development (Windows cURL issue)
+            if (app()->environment('local')) {
+                $http = $http->withoutVerifying();
+            }
+
+            $response = $http->post('https://api.telnyx.com/v2/messages', [
                 'from' => $fromNumber,
                 'to' => $to,
                 'text' => $message,
